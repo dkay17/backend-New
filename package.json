@@ -1,0 +1,36 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "This repository contains the backend for the Aurora Event Collective application.  \r It provides APIs for the frontend (stored in the `frontendd` repo) to consume — handling things like user authentication, event creation/listing, data storage, etc.",
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx prisma generate ",
+    "vercel-build": "npm run build && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "@vercel/node": "^5.5.15",
+    "nodemon": "^3.1.11",
+    "prisma": "^7.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.1.0",
+    "@prisma/client": "^7.1.0",
+    "@prisma/extension-accelerate": "^3.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
+  "type": "module"
+}

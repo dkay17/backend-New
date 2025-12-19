@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Event {
+  id          String   @id
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  calendarStats CalendarStat[]
+}
+
+/// Tracks per-platform calendar add clicks for an event
+model CalendarStat {
+  id        Int      @id @default(autoincrement())
+  eventId   String
+  platform  String // "google" | "apple"
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([eventId, platform])
+}
