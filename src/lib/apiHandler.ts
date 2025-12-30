@@ -1,4 +1,5 @@
 // src/lib/apiHandler.ts
+import cors from 'cors';
 import { VercelRequest, VercelResponse } from '@vercel/node'
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<any> | any
@@ -20,17 +21,33 @@ function extractIdFromPath(req: VercelRequest): string | undefined {
   return undefined
 }
 
+const corsMiddleware = cors({ origin: '*' });
+
+function runCors(req: any, res: any) {
+  return new Promise<void>((resolve, reject) => {
+    corsMiddleware(req, res, (err: any) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
+
 export function apiHandler(handler: Handler): Handler {
   return async (req, res) => {
     try {
-      // If the route framework didn't populate `req.query.id`, try extracting from the path.
-      const currentId = (req.query as any)?.id as string | undefined
-      if (!currentId) {
-        const id = extractIdFromPath(req)
-        if (id) {
-          ;(req.query as any) = { ...(req.query as any), id }
-        }
+      await runCors(req, res);
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
+    
+    // If the route framework didn't populate `req.query.id`, try extracting from the path.
+    const currentId = (req.query as any)?.id as string | undefined
+    if (!currentId) {
+      const id = extractIdFromPath(req)
+      if (id) {
+        ;(req.query as any) = { ...(req.query as any), id }
       }
+    }
 
       const result = await handler(req, res)
       return result
